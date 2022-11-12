@@ -7,8 +7,6 @@ LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 #define t2 9
 #define t3 8
 
-#define t4 7
-#define t5 13
 
 Servo myservo;
 
@@ -43,80 +41,13 @@ void loop()
   float d1 = 0.01723 * readDistance(t1, t1);
   float d2 = 0.01723 * readDistance(t2, t2);
   float d3 = 0.01723 * readDistance(t3, t3);
-  float d4 = 0.01723 * readDistance(t4, t4);
-  float d5 = 0.01723 * readDistance(t5, t5);
   //get all sensor readings
   
   Serial.println("d1 = " + String(d1) + "cm");
   Serial.println("d2 = " + String(d2) + "cm");
   Serial.println("d3 = " + String(d3) + "cm");
-  Serial.println("d4 = " + String(d4) + "cm");
-  Serial.println("d5 = " + String(d5) + "cm");
   //display all sensor distance on serial monitor
   
-/* For below command
-barierState is used to ensure that the barrier either is closed or open for enter or exit
-
-So while barrierState is:
-0	barrier is closed
--1	barrier is open for enter
-1	barrier is open for exit
--2	barrier is closed after the vehicle passed the barrier gate (enter)
-2	barrier is closed after the vehicle passed the barrier gate (exit)
-
-after it reached to -2 or 2 value, it will reset back to 0 when there is no vehicle detected
-by two sensor.
-
-For parkingAvailable, we set to 3 as we have 3 parking lot only
-so it will automatically update while the barrier is open.
-Therefore, the barrier will not be open while there is no more parking lot available.
-*/
-  
-if (barrierState == 0)
-{
-  if (d4<100 && d5>=100 && parkingAvailable>0)
-  {
-     parkingAvailable -= 1;
-     barrierState = -1;
-     myservo.write(90);
-  }
-  if (d4>=100 && d5<100 && parkingAvailable<3)
-  {
-     parkingAvailable += 1;
-     barrierState = 1;
-     myservo.write(90);
-  }
-}
-else if (barrierState == -1)
-{
-  if (d4>=100 && d5<100)
-  {
-     barrierState = -2;
-     myservo.write(0);
-  }
-}  
- else if (barrierState == 1)
-{
-    if (d5>=100 && d4<100)
-  {
-     barrierState = 2;
-     myservo.write(0);
-  }
-}
- else if (barrierState == -2)
-{
-    if (d5>=100)
-  {
-     barrierState = 0;
-  }
-}  
-else if (barrierState == 2)
-{
-    if (d4>=100)
-  {
-     barrierState = 0;
-  }
-}  
 
 /*
 The command below is used to print out the information on the LCD Screen
